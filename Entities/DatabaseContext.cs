@@ -70,7 +70,7 @@ namespace Entities
             }
             else
             {
-                connectionString = this._configuration.GetConnectionString("cityInfoDBConnectionString");
+                connectionString = this._configuration.GetConnectionString("Student_WebApiDBConnectionString");
             }
             optionsBuilder
                 .UseLazyLoadingProxies()

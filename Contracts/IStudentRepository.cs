@@ -12,6 +12,8 @@ namespace Contracts
         // Metoderne herunder er kun med for test formål. For at vise i 
         // CityController.cs hvordan man skal gøre for at få alle relationelle
         // data med, hvis man ikke har enabled lazy loading.
+
+        Task<IEnumerable<Student>> GetStudentsInTeam(int TeamID);
         //Task<IEnumerable<City>> GetAllCities(bool IncludeRelations = false);
         //Task<IEnumerable<City>> GetAllCitiesMockable(bool IncludeRelations = false);
 
