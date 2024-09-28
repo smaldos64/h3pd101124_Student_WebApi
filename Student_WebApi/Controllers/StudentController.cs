@@ -28,13 +28,23 @@ namespace Student_WebApi.Controllers
         }
 
         [HttpGet("GetStudents")]
-        public async Task<IActionResult> GetStudents(string UserName = "No Name")
+        public async Task<IActionResult> GetStudents(string UserName = "No Name",
+                                                     bool UseLazyLoading = true)
         {
             try
             {
                 IEnumerable<Student> StudentList = new List<Student>();
 
-                this._repositoryWrapper.StudentRepositoryWrapper.EnableLazyLoading();
+                if (false == UseLazyLoading)
+                {
+                    _repositoryWrapper.StudentRepositoryWrapper.DisableLazyLoading();
+                }
+                else
+                {
+                    _repositoryWrapper.StudentRepositoryWrapper.EnableLazyLoading();
+                }
+                //this._repositoryWrapper.StudentRepositoryWrapper.EnableLazyLoading();
+                
                 StudentList = await this._repositoryWrapper.StudentRepositoryWrapper.FindAll();
 
                 List<StudentDto> StudentDtoList;
@@ -53,11 +63,20 @@ namespace Student_WebApi.Controllers
 
         [HttpGet("GetStudent/{StudentID}")]
         public async Task<IActionResult> GetStudent(int StudentID,
-                                                 string UserName = "No Name")
+                                                    string UserName = "No Name",
+                                                    bool UseLazyLoading = true)
         {
             try
             {
-                this._repositoryWrapper.StudentRepositoryWrapper.EnableLazyLoading();
+                if (false == UseLazyLoading)
+                {
+                    _repositoryWrapper.StudentRepositoryWrapper.DisableLazyLoading();
+                }
+                else
+                {
+                    _repositoryWrapper.StudentRepositoryWrapper.EnableLazyLoading();
+                }
+                //this._repositoryWrapper.StudentRepositoryWrapper.EnableLazyLoading();
 
                 Student Student_Object = await this._repositoryWrapper.StudentRepositoryWrapper.FindOne(StudentID);
 
