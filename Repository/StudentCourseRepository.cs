@@ -22,7 +22,39 @@ namespace Repository
         }
         #endregion
 
-        #region From_CityLanguage
+        #region From_StudentCourse
+        public async Task<IEnumerable<StudentCourse>> GetAllCoursesWithStudentID(int StudentID)
+        {
+            var collection = await base.FindByCondition(sc => sc.StudentID == StudentID);
+            collection = collection.OrderByDescending(sc => sc.Student.StudentCourses.Count).ThenBy(c => c.Course.CourseName);
+
+            return (collection.ToList());
+        }
+
+        public async Task<IEnumerable<StudentCourse>> GetAllStudentsWithCourseID(int CourseID)
+        {
+            var collection = await base.FindByCondition(sc => sc.CourseID == CourseID);
+            collection = collection.OrderByDescending(sc => sc.Student.StudentCourses.Count);
+
+            return (collection.ToList());
+        }
+
+        public async Task<StudentCourse> GetStudentIDCourseIDCombination(int StudentID, int CourseID)
+        {
+            var StudentCourseItem = await base.FindByCondition(sc => sc.StudentID == StudentID &&
+                                                               sc.CourseID == CourseID);
+
+            if (null != StudentCourseItem)
+            {
+                return (StudentCourseItem.ElementAt(0));
+            }
+            else
+            {
+                return (null);
+            }
+
+        }
+
         //public async Task<IEnumerable<CityLanguage>> GetAllCitiesLanguages(bool IncludeRelations = false)
         //{
         //    if (false == IncludeRelations)
@@ -40,7 +72,7 @@ namespace Repository
         //            Include(c => c.City).
         //            ThenInclude(co => co.Country).
         //            Include(l => l.Language).ToListAsync();
-                   
+
         //        var collection1 = collection.OrderByDescending(c => c.City.CityLanguages.Count);
 
         //        return collection1;
@@ -95,7 +127,7 @@ namespace Repository
         //{
         //    var CityLanguageItem = await base.FindByCondition(l => l.LanguageId == LanguageId &&
         //                                                      l.CityId == CityId);
-            
+
         //    if (null != CityLanguageItem)
         //    {
         //        return (CityLanguageItem.ElementAt(0));
@@ -104,7 +136,7 @@ namespace Repository
         //    {
         //        return (null);
         //    }
-            
+
         //}
 
         //public async Task<bool> UpdateCityLanguageCombination(CityLanguage CityLanguageToDelete_Object,

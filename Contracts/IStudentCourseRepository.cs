@@ -10,29 +10,12 @@ namespace Contracts
 {
     public interface IStudentCourseRepository : IRepositoryBase<StudentCourse>
     {
-        #region From_CityLanguage
-        //Task<IEnumerable<CityLanguage>> GetAllCitiesLanguages(bool IncludeRelations = false);
+        #region From_StudentCourse
+        Task<IEnumerable<StudentCourse>> GetAllCoursesWithStudentID(int StudentID);
 
-        //Task<IEnumerable<CityLanguage>> GetAllCitiesFromLanguageId(int LanguageId);
+        Task<IEnumerable<StudentCourse>> GetAllStudentsWithCourseID(int CourseID);
 
-        //Task<IEnumerable<CityLanguage>> GetAllLanguagesFromCityId(int CityId);
-
-        //Task AddCityLanguage(CityLanguage cityLanguage);
-
-        //Task<IEnumerable<CityLanguage>> GetAllCitiesWithLanguageId(int LanguageId);
-        
-        //Task<IEnumerable<CityLanguage>> GetAllLanguagesWithCityId(int CityId);
-
-        //Task<CityLanguage> GetCityIdLanguageIdCombination(int CityId, int LanguageId);
-
-        //Task<bool> UpdateCityLanguageCombination(CityLanguage CityLanguageToDelete_Object,
-        //                                         CityLanguage CityLanguageToSave_Object);
-
-        //Task<bool> UpdateCityLanguageList(List<CityLanguageForSaveAndUpdateDto> CityLanguageNew_Object_list,
-        //                                  List<CityLanguageDto> CityLanguageOld_Object_List);
-
-        //public bool LanguageIdFoundInCityLanguageList(List<CityLanguageForSaveAndUpdateDto> CityLanguageNew_Object_list,
-        //                                              int LanguageId);
+        Task<StudentCourse> GetStudentIDCourseIDCombination(int StudentID, int CourseID);
         #endregion
     }
 }

@@ -14,12 +14,12 @@ namespace Entities.DataTransferObjects
         public int CourseID { get; set; }
     }
 
-    public class CityLanguageForSaveAndUpdateDto : StudentCourseForSaveDto
+    public class StudentCourseForSaveAndUpdateDto : StudentCourseForSaveDto
     {
         
     }
 
-    public class CityLanguageForUpdateDto : StudentCourseForSaveDto
+    public class StudentCourseForUpdateDto : StudentCourseForSaveDto
     {
 
     }

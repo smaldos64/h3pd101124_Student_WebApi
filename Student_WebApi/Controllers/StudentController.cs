@@ -150,7 +150,7 @@ namespace Student_WebApi.Controllers
                     await this._broadcastHub.Clients.All.SendAsync("UpdateCityDataMessage");
 #endif
                     _logger.LogInfo($"Student with ID : {Student_Object.StudentID} has been saved by {UserName} !!!");
-                    return Ok(Student_Object.StudentID);
+                    return Ok($"Student with ID : {Student_Object.StudentID} has been saved by {UserName} !!!");
                 }
                 else
                 {
