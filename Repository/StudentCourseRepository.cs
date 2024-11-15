@@ -26,7 +26,7 @@ namespace Repository
         public async Task<IEnumerable<StudentCourse>> GetAllCoursesWithStudentID(int StudentID)
         {
             var collection = await base.FindByCondition(sc => sc.StudentID == StudentID);
-            collection = collection.OrderByDescending(sc => sc.Student.StudentCourses.Count).ThenBy(c => c.Course.CourseName);
+            //collection = collection.OrderByDescending(sc => sc.Student.StudentCourses.Count).ThenBy(c => c.Course.CourseName);
 
             return (collection.ToList());
         }
@@ -34,7 +34,7 @@ namespace Repository
         public async Task<IEnumerable<StudentCourse>> GetAllStudentsWithCourseID(int CourseID)
         {
             var collection = await base.FindByCondition(sc => sc.CourseID == CourseID);
-            collection = collection.OrderByDescending(sc => sc.Student.StudentCourses.Count);
+            //collection = collection.OrderByDescending(sc => sc.Student.StudentCourses.Count);
 
             return (collection.ToList());
         }

@@ -18,6 +18,9 @@ namespace Entities.Models
         [Required]
         [MaxLength(50)]
         public string ?TeamName { get; set; }
+
+        public virtual ICollection<Student> Students { get; set; }
+               = new List<Student>();
     }
 
   }

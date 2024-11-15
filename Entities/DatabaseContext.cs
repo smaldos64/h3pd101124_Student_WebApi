@@ -14,6 +14,7 @@ namespace Entities
     public class DatabaseContext : DbContext
     {
         private static string _sQLConnectionString = String.Empty;
+        private readonly IConfiguration _configuration;
 
         public static string SQLConnectionString
         {
@@ -30,7 +31,7 @@ namespace Entities
             }
         }
 
-        private readonly IConfiguration _configuration;
+        //private readonly IConfiguration _configuration;
         public virtual DbSet<Student> Core_8_0_Students { get; set; }
         public virtual DbSet<Course> Core_8_0_Courses { get; set; }
         public virtual DbSet<Team> Core_8_0_Teams { get; set; }
@@ -40,7 +41,7 @@ namespace Entities
 
         // Constructor herunder bliver kaldt under normal kørsel.
         public DatabaseContext(DbContextOptions<DatabaseContext> options,
-                                IConfiguration configuration) : base(options)
+                               IConfiguration configuration) : base(options)
         {
             this._configuration = configuration;
         }
