@@ -133,8 +133,6 @@ namespace Student_WebApi_ADO_Net.Controllers
         {
             try
             {
-                //int NumberOfObjectsSaved = 0;
-
                 if (!ModelState.IsValid)
                 {
                     //this._logger.LogError($"ModelState is Invalid for {UserName} in action CreateStudent");
@@ -154,23 +152,6 @@ namespace Student_WebApi_ADO_Net.Controllers
                 {
                     return BadRequest($"Noget gik galt, da {Student_Object.StudentName} : skulle oprettes !!!");
                 }
-
-//                await this._repositoryWrapper.StudentRepositoryWrapper.Create(Student_Object);
-//                NumberOfObjectsSaved = await this._repositoryWrapper.Save();
-
-//                if (1 == NumberOfObjectsSaved)
-//                {
-//#if Use_Hub_Logic_On_ServerSide
-//                    await this._broadcastHub.Clients.All.SendAsync("UpdateCityDataMessage");
-//#endif
-//                    _logger.LogInfo($"Student with ID : {Student_Object.StudentID} has been saved by {UserName} !!!");
-//                    return Ok($"Student with ID : {Student_Object.StudentID} has been saved by {UserName} !!!");
-//                }
-//                else
-//                {
-//                    _logger.LogError($"Error when saving Student by {UserName} !!!");
-//                    return BadRequest($"Error when saving Student by {UserName} !!!");
-//                }
             }
             catch (Exception Error)
             {
@@ -180,101 +161,115 @@ namespace Student_WebApi_ADO_Net.Controllers
         }
 
         // PUT: api/Student/5
-//        [HttpPut("UpdateStudent/{StudentID}")]
-//        public async Task<IActionResult> UpdateStudent(int StudentID,
-//                                                       [FromBody] StudentForUpdateDto StudentForUpdateDto_Object,
-//                                                       string UserName = "No Name")
-//        {
-//            try
-//            {
-//                int NumberOfObjectsUpdated = 0;
+        [HttpPut("UpdateStudent_ADO_Net/{StudentID}")]
+        public async Task<IActionResult> UpdateStudent_ADO_Net(int StudentID,
+                                                               [FromBody] StudentForUpdateDto StudentForUpdateDto_Object,
+                                                               string UserName = "No Name")
+        {
+            try
+            {
+                int NumberOfObjectsUpdated = 0;
 
-//                if (StudentID != StudentForUpdateDto_Object.StudentID)
-//                {
-//                    _logger.LogError($"StudentID != StudentForUpdateDto_Object.StudentID for {UserName} in action UpdateStudent");
-//                    return BadRequest($"StudentID != StudentForUpdateDto_Object.StudentID for {UserName} in action UpdateStudent");
-//                }
+                if (StudentID != StudentForUpdateDto_Object.StudentID)
+                {
+                    //_logger.LogError($"StudentID != StudentForUpdateDto_Object.StudentID for {UserName} in action UpdateStudent");
+                    return BadRequest($"StudentID != StudentForUpdateDto_Object.StudentID for {UserName} in action UpdateStudent");
+                }
 
-//                if (!ModelState.IsValid)
-//                {
-//                    _logger.LogError($"ModelState is Invalid for {UserName} in action UpdateStudent");
-//                    return BadRequest(ModelState);
-//                }
+                if (!ModelState.IsValid)
+                {
+                    //_logger.LogError($"ModelState is Invalid for {UserName} in action UpdateStudent");
+                    return BadRequest(ModelState);
+                }
 
-//                Student Student_Object = await _repositoryWrapper.StudentRepositoryWrapper.FindOne(StudentID);
+                //Student Student_Object = await _repositoryWrapper.StudentRepositoryWrapper.FindOne(StudentID);
 
-//                if (null == Student_Object)
-//                {
-//                    return NotFound();
-//                }
+                //if (null == Student_Object)
+                //{
+                //    return NotFound();
+                //}
 
-//                TypeAdapter.Adapt(StudentForUpdateDto_Object, Student_Object);
+                Student Student_Object = new Student();
+                Student_Object = StudentForUpdateDto_Object.Adapt<Student>();
 
-//                await _repositoryWrapper.StudentRepositoryWrapper.Update(Student_Object);
+                int UpdateResult = Student_Object.Update();
 
-//                NumberOfObjectsUpdated = await _repositoryWrapper.Save();
+                if (UpdateResult >= 0)
+                {
+                    return Ok($"Student med StudentId: {Student_Object.StudentID} opdateret !!!");
+                }
+                else
+                {
+                    return BadRequest($"Noget gik galt, da Student med StudentId: {Student_Object.StudentID} : skulle opdateres !!!");
+                }
 
-//                if (1 == NumberOfObjectsUpdated)
-//                {
-//#if Use_Hub_Logic_On_ServerSide
-//                    await this._broadcastHub.Clients.All.SendAsync("UpdateStudentDataMessage");
-//#endif
-//                    _logger.LogInfo($"Student with ID : {Student_Object.StudentID} has been updated by {UserName} !!!");
-//                    return Ok($"Student with ID : {Student_Object.StudentID} has been updated by {UserName} !!!"); ;
-//                }
-//                else
-//                {
-//                    _logger.LogError($"Error when updating Student with ID : {Student_Object.StudentID} by {UserName} !!!");
-//                    return BadRequest($"Error when updating Student with ID : {Student_Object.StudentID} by {UserName} !!!");
-//                }
-//            }
-//            catch (Exception Error)
-//            {
-//                _logger.LogError($"Something went wrong inside UpdateStudent action for {UserName}: {Error.Message}");
-//                return StatusCode((int)HttpStatusCode.InternalServerError, $"Internal server error : {Error.ToString()}");
-//            }
-//        }
+                //TypeAdapter.Adapt(StudentForUpdateDto_Object, Student_Object);
 
-//        // DELETE: api/Student/5
-//        [HttpDelete("DeleteStudent/{StudentID}")]
-//        public async Task<IActionResult> DeleteStudent(int StudentID,
-//                                                       string UserName = "No Name")
-//        {
-//            try
-//            {
-//                int NumberOfObjectsDeleted;
+                //                await _repositoryWrapper.StudentRepositoryWrapper.Update(Student_Object);
 
-//                Student Student_Object = await this._repositoryWrapper.StudentRepositoryWrapper.FindOne(StudentID);
+                //                NumberOfObjectsUpdated = await _repositoryWrapper.Save();
 
-//                if (null == Student_Object)
-//                {
-//                    this._logger.LogError($"Student with ID {StudentID} not found inside action DeleteStudent for {UserName}");
-//                    return NotFound();
-//                }
+                //                if (1 == NumberOfObjectsUpdated)
+                //                {
+                //#if Use_Hub_Logic_On_ServerSide
+                //                    await this._broadcastHub.Clients.All.SendAsync("UpdateStudentDataMessage");
+                //#endif
+                //                    _logger.LogInfo($"Student with ID : {Student_Object.StudentID} has been updated by {UserName} !!!");
+                //                    return Ok($"Student with ID : {Student_Object.StudentID} has been updated by {UserName} !!!"); ;
+                //                }
+                //                else
+                //                {
+                //                    _logger.LogError($"Error when updating Student with ID : {Student_Object.StudentID} by {UserName} !!!");
+                //                    return BadRequest($"Error when updating Student with ID : {Student_Object.StudentID} by {UserName} !!!");
+                //                }
+            }
+            catch (Exception Error)
+            {
+                //_logger.LogError($"Something went wrong inside UpdateStudent action for {UserName}: {Error.Message}");
+                return StatusCode((int)HttpStatusCode.InternalServerError, $"Internal server error : {Error.ToString()}");
+            }
+        }
 
-//                await this._repositoryWrapper.StudentRepositoryWrapper.Delete(Student_Object);
+        //        // DELETE: api/Student/5
+        //        [HttpDelete("DeleteStudent/{StudentID}")]
+        //        public async Task<IActionResult> DeleteStudent(int StudentID,
+        //                                                       string UserName = "No Name")
+        //        {
+        //            try
+        //            {
+        //                int NumberOfObjectsDeleted;
 
-//                NumberOfObjectsDeleted = await this._repositoryWrapper.Save();
+        //                Student Student_Object = await this._repositoryWrapper.StudentRepositoryWrapper.FindOne(StudentID);
 
-//                if (1 == NumberOfObjectsDeleted)
-//                {
-//#if Use_Hub_Logic_On_ServerSide
-//                    await this._broadcastHub.Clients.All.SendAsync("UpdateStudentDataMessage");
-//#endif
-//                    this._logger.LogInfo($"Student with ID {StudentID} has been deleted in action DeleteStudent by {UserName}");
-//                    return Ok($"Student with ID {StudentID} has been deleted in action DeleteStudent by {UserName}");
-//                }
-//                else
-//                {
-//                    _logger.LogError($"Error when deleting Student with ID : {StudentID} by {UserName} !!!");
-//                    return BadRequest($"Error when deleting Student with ID : {StudentID} by {UserName} !!!");
-//                }
-//            }
-//            catch (Exception Error)
-//            {
-//                _logger.LogError($"Something went wrong inside DeleteStudent action for {UserName}: {Error.Message}");
-//                return StatusCode((int)HttpStatusCode.InternalServerError, $"Internal server error : {Error.ToString()}");
-//            }
-//        }
+        //                if (null == Student_Object)
+        //                {
+        //                    this._logger.LogError($"Student with ID {StudentID} not found inside action DeleteStudent for {UserName}");
+        //                    return NotFound();
+        //                }
+
+        //                await this._repositoryWrapper.StudentRepositoryWrapper.Delete(Student_Object);
+
+        //                NumberOfObjectsDeleted = await this._repositoryWrapper.Save();
+
+        //                if (1 == NumberOfObjectsDeleted)
+        //                {
+        //#if Use_Hub_Logic_On_ServerSide
+        //                    await this._broadcastHub.Clients.All.SendAsync("UpdateStudentDataMessage");
+        //#endif
+        //                    this._logger.LogInfo($"Student with ID {StudentID} has been deleted in action DeleteStudent by {UserName}");
+        //                    return Ok($"Student with ID {StudentID} has been deleted in action DeleteStudent by {UserName}");
+        //                }
+        //                else
+        //                {
+        //                    _logger.LogError($"Error when deleting Student with ID : {StudentID} by {UserName} !!!");
+        //                    return BadRequest($"Error when deleting Student with ID : {StudentID} by {UserName} !!!");
+        //                }
+        //            }
+        //            catch (Exception Error)
+        //            {
+        //                _logger.LogError($"Something went wrong inside DeleteStudent action for {UserName}: {Error.Message}");
+        //                return StatusCode((int)HttpStatusCode.InternalServerError, $"Internal server error : {Error.ToString()}");
+        //            }
+        //        }
     }
 }

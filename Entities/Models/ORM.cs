@@ -74,8 +74,7 @@ namespace Entities.Models
             Console.WriteLine(sql);
 
             var sqlConnection = new SqlConnection(GetSqlConnectionString());
-            //using var dbCommand = sqlConnection.CreateCommand();
-
+            
             sqlConnection.Open();
 
             SqlCommand dbCommand = new SqlCommand(sql, sqlConnection);
@@ -89,7 +88,7 @@ namespace Entities.Models
 
             return (Result);
         }
-        public void Update()
+        public int Update()
         {
             string TABLE_NAME = TableName();
             ORMField primaryKey = primary_keys[TABLE_NAME];
@@ -107,10 +106,11 @@ namespace Entities.Models
                     continue;
                 }
 
-                stringBuilder.Append("," + propertyName + "=" + valueType.GetSQLValue(this));
+                stringBuilder.Append("," + propertyName + "=" + "'" + valueType.GetSQLValue(this) + "'");
             }
 
             String assignments = stringBuilder.ToString();
+            assignments = assignments.Substring(1);
             int pk_value = int.Parse(primaryKey.GetSQLValue(this));
 
             string sql = $@"UPDATE {TABLE_NAME} 
@@ -118,6 +118,21 @@ namespace Entities.Models
                 WHERE {pk_name}={pk_value}";
 
             Console.WriteLine(sql);
+
+            var sqlConnection = new SqlConnection(GetSqlConnectionString());
+
+            sqlConnection.Open();
+
+            SqlCommand dbCommand = new SqlCommand(sql, sqlConnection);
+
+            int Result = dbCommand.ExecuteNonQuery();
+            if (Result < 0)
+            {
+                Console.WriteLine("Noget gik galt under Update operationen !!!");
+            }
+            sqlConnection.Close();
+
+            return (Result);
         }
 
         public void DeleteDictionariesAfterDatabaseTransaction()
