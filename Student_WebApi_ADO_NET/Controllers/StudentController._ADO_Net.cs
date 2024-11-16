@@ -1,12 +1,13 @@
-﻿//using Contracts;
+﻿using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 //using ServicesContracts;
 using System.Net;
-using Student_WebApi_ADO_Net.Tools;
-using Student_WebApi_ADO_NET.Tools;
+//using Student_WebApi_ADO_Net.Tools;
+//using Student_WebApi_ADO_NET.Tools;
+using Student_WebApi_ADO_NET.ViewModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,49 +17,63 @@ namespace Student_WebApi_ADO_Net.Controllers
     [ApiController]
     public class StudentController_ADO_Net : ControllerBase
     {
-        //private IRepositoryWrapper _repositoryWrapper;
-        //private ILoggerManager _logger;
+        private ILoggerManager _logger;
 
 #if Use_Hub_Logic_On_ServerSide
         private readonly IHubContext<BroadcastHub> _broadcastHub;
 #endif
-        //public StudentController_ADO_Net(ILoggerManager logger,
-        //                                 IRepositoryWrapper repositoryWrapper)
-        //{
-        //    this._logger = logger;
-        //    this._repositoryWrapper = repositoryWrapper;
-        //}
+        public StudentController_ADO_Net(ILoggerManager logger)
+        {
+            this._logger = logger;
+        }
 
         [HttpGet("GetStudents_ADO_Net")]
         public async Task<IActionResult> GetStudents_ADO_Net(string UserName = "No Name",
-                                                     bool IncludeRelations = true)
+                                                             bool IncludeRelations = true)
         {
             try
             {
-                //IEnumerable<Student> StudentList = new List<Student>();
+                if (false == IncludeRelations)
+                {
+                    Student Student_Object = new Student();
+                    IEnumerable<Student> StudentList = new List<Student>();
 
-                //if (false == IncludeRelations)
-                //{
-                //    ToolsDataBaseLowerLayer.WatchStudentList(ToolsDataBaseLowerLayer.GetSQLCommandAndFields());
-                //}
-                //else
-                //{
-                //    ToolsDataBaseLowerLayer.WatchStudentList(ToolsDataBaseLowerLayer.GetSQLCommandAndFields());
-                //}
+                    StudentList = Student_Object.GetData<Student>();
+
+                    List<StudentDto> StudentDtoList;
+
+                    StudentDtoList = StudentList.Adapt<StudentDto[]>().ToList();
+                    this._logger.LogInfo($"All Students have been read from GetStudents_ADO_Net action by {UserName}. No Releations Included");
+                    return Ok(StudentList);
+                }
+                else
+                {
+                    StudentWithAllRelations_ADO_Net StudentWithAllRelations_ADO_Net_Object = 
+                        new StudentWithAllRelations_ADO_Net();
+
+                    List<StudentWithAllRelations_ADO_Net> StudentWithAllRelations_ADO_Net_List =
+                        new List<StudentWithAllRelations_ADO_Net>();
+                    StudentWithAllRelations_ADO_Net_List = StudentWithAllRelations_ADO_Net_Object.GetDataWithRelations<StudentWithAllRelations_ADO_Net>(DatabaseCommandStrings.SQLString_SP);
+                    this._logger.LogInfo($"All Students have been read from GetStudents_ADO_Net action by {UserName}. Relations Included");
+                    return Ok(StudentWithAllRelations_ADO_Net_List);
+                    //ToolsDataBaseLowerLayer.WatchStudentList(ToolsDataBaseLowerLayer.GetSQLCommandAndFields());
+                }
 
                 //StudentList = await this._repositoryWrapper.StudentRepositoryWrapper.FindAll();
 
                 //List<StudentDto> StudentDtoList;
 
+                // Ser bort fra transformationen til DTO objekter i førte omgang.
                 //StudentDtoList = StudentList.Adapt<StudentDto[]>().ToList();
 
-                //this._logger.LogInfo($"All Students have been read from GetStudents action by {UserName}");
-                var StudentList = DatabaseInterface.ExecuteDatabaseReadCommand<Student>(DatabaseCommandStrings.SQLString_SP);
-                return Ok(StudentList);
+                //this._logger.LogInfo($"All Students have been read from GetStudents_ADO_Net action by {UserName}");
+                //var StudentList = DatabaseInterface.ExecuteDatabaseReadCommand<Student>(DatabaseCommandStrings.SQLString_SP);
+                
+                //return Ok(StudentList);
             }
             catch (Exception Error)
             {
-                //this._logger.LogError($"Something went wrong inside GetStudents action for {UserName} : {Error.Message}");
+                this._logger.LogError($"Something went wrong inside GetStudents_ADO_Net action for {UserName} : {Error.Message}");
                 return StatusCode((int)HttpStatusCode.InternalServerError, $"Internal server error : {Error.ToString()}");
             }
         }
@@ -168,8 +183,6 @@ namespace Student_WebApi_ADO_Net.Controllers
         {
             try
             {
-                int NumberOfObjectsUpdated = 0;
-
                 if (StudentID != StudentForUpdateDto_Object.StudentID)
                 {
                     //_logger.LogError($"StudentID != StudentForUpdateDto_Object.StudentID for {UserName} in action UpdateStudent");
@@ -181,13 +194,6 @@ namespace Student_WebApi_ADO_Net.Controllers
                     //_logger.LogError($"ModelState is Invalid for {UserName} in action UpdateStudent");
                     return BadRequest(ModelState);
                 }
-
-                //Student Student_Object = await _repositoryWrapper.StudentRepositoryWrapper.FindOne(StudentID);
-
-                //if (null == Student_Object)
-                //{
-                //    return NotFound();
-                //}
 
                 Student Student_Object = new Student();
                 Student_Object = StudentForUpdateDto_Object.Adapt<Student>();
@@ -202,26 +208,6 @@ namespace Student_WebApi_ADO_Net.Controllers
                 {
                     return BadRequest($"Noget gik galt, da Student med StudentId: {Student_Object.StudentID} : skulle opdateres !!!");
                 }
-
-                //TypeAdapter.Adapt(StudentForUpdateDto_Object, Student_Object);
-
-                //                await _repositoryWrapper.StudentRepositoryWrapper.Update(Student_Object);
-
-                //                NumberOfObjectsUpdated = await _repositoryWrapper.Save();
-
-                //                if (1 == NumberOfObjectsUpdated)
-                //                {
-                //#if Use_Hub_Logic_On_ServerSide
-                //                    await this._broadcastHub.Clients.All.SendAsync("UpdateStudentDataMessage");
-                //#endif
-                //                    _logger.LogInfo($"Student with ID : {Student_Object.StudentID} has been updated by {UserName} !!!");
-                //                    return Ok($"Student with ID : {Student_Object.StudentID} has been updated by {UserName} !!!"); ;
-                //                }
-                //                else
-                //                {
-                //                    _logger.LogError($"Error when updating Student with ID : {Student_Object.StudentID} by {UserName} !!!");
-                //                    return BadRequest($"Error when updating Student with ID : {Student_Object.StudentID} by {UserName} !!!");
-                //                }
             }
             catch (Exception Error)
             {

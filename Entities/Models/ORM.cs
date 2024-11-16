@@ -1,5 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
+using System.Reflection;
+using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace Entities.Models
@@ -29,6 +31,7 @@ namespace Entities.Models
         //table             //property
         static Dictionary<string, Dictionary<string, ORMField>> tables = new Dictionary<string, Dictionary<string, ORMField>>();
         static Dictionary<string, ORMField> primary_keys = new Dictionary<string, ORMField>();
+        private static SqlConnection ?DatabaseConnection = null;
 
         protected static void Int(string tableName, string propertyName, Func<ORM, string> getter)
         {
@@ -73,18 +76,16 @@ namespace Entities.Models
                 ({values})";
             Console.WriteLine(sql);
 
-            var sqlConnection = new SqlConnection(GetSqlConnectionString());
-            
-            sqlConnection.Open();
-
-            SqlCommand dbCommand = new SqlCommand(sql, sqlConnection);
+            OpenDatabaseConnection();
+            SqlCommand dbCommand = new SqlCommand(sql, DatabaseConnection);
 
             int Result = dbCommand.ExecuteNonQuery();
             if (Result < 0)
             {
                 Console.WriteLine("Noget gik galt under Save operationen !!!");
             }
-            sqlConnection.Close();
+          
+            CloseDatabaseConnection();
 
             return (Result);
         }
@@ -119,26 +120,158 @@ namespace Entities.Models
 
             Console.WriteLine(sql);
 
-            var sqlConnection = new SqlConnection(GetSqlConnectionString());
-
-            sqlConnection.Open();
-
-            SqlCommand dbCommand = new SqlCommand(sql, sqlConnection);
+            OpenDatabaseConnection();
+            SqlCommand dbCommand = new SqlCommand(sql, DatabaseConnection);
 
             int Result = dbCommand.ExecuteNonQuery();
             if (Result < 0)
             {
                 Console.WriteLine("Noget gik galt under Update operationen !!!");
             }
-            sqlConnection.Close();
+
+            CloseDatabaseConnection();
 
             return (Result);
         }
 
-        public void DeleteDictionariesAfterDatabaseTransaction()
+        public int Delete()
         {
-            tables.Clear();
-            primary_keys.Clear();
+            return 0;
+        }
+
+        public List<T> GetData<T>() where T : new()
+        {
+            string TABLE_NAME = TableName();
+            List<T> GenericList = new List<T>();
+            var Entity = typeof(T);
+            var PropDict = new Dictionary<string, PropertyInfo>();
+
+            string sql = $@"Select * FROM {TABLE_NAME}";
+
+            OpenDatabaseConnection();
+            SqlCommand dbCommand = new SqlCommand(sql, DatabaseConnection);
+
+            try
+            {
+                var DataReader = dbCommand.ExecuteReader();
+
+                if (DataReader.HasRows)
+                {
+                    var Props = Entity.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                    PropDict = Props.ToDictionary(p => p.Name.ToUpper(), p => p);
+
+                    while (DataReader.Read())
+                    {
+                        T newObject = new T();
+
+                        for (int Index = 0; Index < DataReader.FieldCount; Index++)
+                        {
+                            if (PropDict.ContainsKey(DataReader.GetName(Index).ToUpper()))
+                            {
+                                var Info = PropDict[DataReader.GetName(Index).ToUpper()];
+
+                                if ((Info != null) && Info.CanWrite)
+                                {
+                                    var Val = DataReader.GetValue(Index);
+                                    Info.SetValue(newObject, (Val == DBNull.Value) ? null : Val, null);
+                                }
+                            }
+                        }
+
+                        GenericList.Add(newObject);
+
+                        //mappedDataList.Add(mappedDataRow);
+                    }
+                }
+            } 
+            catch (Exception ex) 
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            return GenericList;
+        }
+
+        public List<T> GetDataById<T>(int Id)
+        {
+            return null;
+        }
+
+        public List<T> GetDataWithRelations<T>(string SQLCommandText) where T : new()
+        {
+            string TABLE_NAME = TableName();
+            List<T> GenericList = new List<T>();
+            var Entity = typeof(T);
+            var PropDict = new Dictionary<string, PropertyInfo>();
+
+            string sql = SQLCommandText;
+
+            OpenDatabaseConnection();
+            SqlCommand dbCommand = new SqlCommand(sql, DatabaseConnection);
+
+            try
+            {
+                var DataReader = dbCommand.ExecuteReader();
+
+                if (DataReader.HasRows)
+                {
+                    var Props = Entity.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                    PropDict = Props.ToDictionary(p => p.Name.ToUpper(), p => p);
+
+                    while (DataReader.Read())
+                    {
+                        T newObject = new T();
+
+                        for (int Index = 0; Index < DataReader.FieldCount; Index++)
+                        {
+                            if (PropDict.ContainsKey(DataReader.GetName(Index).ToUpper()))
+                            {
+                                var Info = PropDict[DataReader.GetName(Index).ToUpper()];
+
+                                if ((Info != null) && Info.CanWrite)
+                                {
+                                    var Val = DataReader.GetValue(Index);
+                                    Info.SetValue(newObject, (Val == DBNull.Value) ? null : Val, null);
+                                }
+                            }
+                        }
+
+                        GenericList.Add(newObject);
+
+                        //mappedDataList.Add(mappedDataRow);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            return GenericList;
+        }
+
+        public List<T> GetDataWithRelationsById<T>(int Id)
+        {
+            return null;
+        }
+
+        private void OpenDatabaseConnection()
+        {
+            if (null == DatabaseConnection)
+            {
+                DatabaseConnection = new SqlConnection(GetSqlConnectionString());
+
+                DatabaseConnection.Open();
+            }
+        }
+
+        private void CloseDatabaseConnection()
+        {
+            if (null != DatabaseConnection)
+            {
+                DatabaseConnection.Close();
+                DatabaseConnection = null;
+            }
         }
 
         private static string GetSqlConnectionString()

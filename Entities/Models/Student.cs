@@ -36,16 +36,16 @@ namespace Entities.Models
 
         static Student()
         {
-            //Int(TABLE_NAME, "StudentID", (orm) => (orm as Student).StudentID + "");
-            //Int(TABLE_NAME, "StudentName", (orm) => (orm as Student).StudentName);
-            //Int(TABLE_NAME, "StudentLastName", (orm) => (orm as Student).StudentLastName + "");
-            //Int(TABLE_NAME, "TeamID", (orm) => (orm as Student).TeamID + "");
-
             Int(TABLE_NAME, "StudentID", (orm) => (orm as Student).StudentID + "");
             Int(TABLE_NAME, "StudentName", (orm) => (orm as Student).StudentName);
             Int(TABLE_NAME, "StudentLastName", (orm) => (orm as Student).StudentLastName);
             Int(TABLE_NAME, "TeamID", (orm) => (orm as Student).TeamID + "");
             PrimaryKey(TABLE_NAME, "StudentID");
+        }
+
+        public Student()
+        {
+            
         }
     }
 }

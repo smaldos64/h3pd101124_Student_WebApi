@@ -1,4 +1,4 @@
-﻿namespace Student_WebApi_ADO_NET.Tools
+﻿namespace Entities.Models
 {
     public class DatabaseCommandStrings
     {
