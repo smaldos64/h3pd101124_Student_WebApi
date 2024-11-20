@@ -85,9 +85,9 @@ namespace Student_WebApi.Extensions
             _propinfo.SetValue(targetHere, propInfo.GetValue(source));
           }
         }
-        catch (ArgumentException aex)
+        catch (ArgumentException ex)
         {
-          if (!string.IsNullOrEmpty(aex.Message))
+          if (!string.IsNullOrEmpty(ex.Message))
             continue;
         }
         catch (Exception ex)

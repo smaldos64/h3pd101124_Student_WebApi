@@ -3,10 +3,7 @@ using Entities.DataTransferObjects;
 using Entities.Models;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-//using ServicesContracts;
 using System.Net;
-//using Student_WebApi_ADO_Net.Tools;
-//using Student_WebApi_ADO_NET.Tools;
 using Student_WebApi_ADO_NET.ViewModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -119,6 +116,10 @@ namespace Student_WebApi_ADO_Net.Controllers
                 Student Student_Object = new Student();
                 Student_Object = StudentForSaveDto_Object.Adapt<Student>();
 
+                // Fuld Generisk metode
+                Student_Object.InsertObjectToDatabase<Student>(Student.TABLE_NAME);
+
+                // Metode med Getter-Setter
                 int SaveResult = Student_Object.Insert();
 
                 if (SaveResult >= 0)
