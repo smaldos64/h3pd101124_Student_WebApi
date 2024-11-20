@@ -48,7 +48,7 @@ namespace Student_WebApi_ADO_Net.Controllers
                 }
                 else
                 {
-                    StudentWithAllRelations_ADO_Net StudentWithAllRelations_ADO_Net_Object = 
+                    StudentWithAllRelations_ADO_Net StudentWithAllRelations_ADO_Net_Object =
                         new StudentWithAllRelations_ADO_Net();
 
                     List<StudentWithAllRelations_ADO_Net> StudentWithAllRelations_ADO_Net_List =
@@ -56,20 +56,7 @@ namespace Student_WebApi_ADO_Net.Controllers
                     StudentWithAllRelations_ADO_Net_List = StudentWithAllRelations_ADO_Net_Object.GetDataWithRelations<StudentWithAllRelations_ADO_Net>(DatabaseCommandStrings.SQLString_SP);
                     this._logger.LogInfo($"All Students have been read from GetStudents_ADO_Net action by {UserName}. Relations Included");
                     return Ok(StudentWithAllRelations_ADO_Net_List);
-                    //ToolsDataBaseLowerLayer.WatchStudentList(ToolsDataBaseLowerLayer.GetSQLCommandAndFields());
                 }
-
-                //StudentList = await this._repositoryWrapper.StudentRepositoryWrapper.FindAll();
-
-                //List<StudentDto> StudentDtoList;
-
-                // Ser bort fra transformationen til DTO objekter i førte omgang.
-                //StudentDtoList = StudentList.Adapt<StudentDto[]>().ToList();
-
-                //this._logger.LogInfo($"All Students have been read from GetStudents_ADO_Net action by {UserName}");
-                //var StudentList = DatabaseInterface.ExecuteDatabaseReadCommand<Student>(DatabaseCommandStrings.SQLString_SP);
-                
-                //return Ok(StudentList);
             }
             catch (Exception Error)
             {
@@ -78,68 +65,43 @@ namespace Student_WebApi_ADO_Net.Controllers
             }
         }
 
-        //[HttpGet("GetStudent/{StudentID}")]
-        //public async Task<IActionResult> GetStudent(int StudentID,
-        //                                            string UserName = "No Name",
-        //                                            bool UseLazyLoading = true)
-        //{
-        //    try
-        //    {
-        //        if (false == UseLazyLoading)
-        //        {
-        //            _repositoryWrapper.StudentRepositoryWrapper.DisableLazyLoading();
-        //        }
-        //        else
-        //        {
-        //            _repositoryWrapper.StudentRepositoryWrapper.EnableLazyLoading();
-        //        }
-        //        //this._repositoryWrapper.StudentRepositoryWrapper.EnableLazyLoading();
+        [HttpGet("GetStudent_ADO_Net/{StudentID}")]
+        public async Task<IActionResult> GetStudent_ADO_Net(int StudentID,
+                                                            string UserName = "No Name",
+                                                            bool IncludeRelations = true)
+        {
+            try
+            {
+                // Implementer kode her
 
-        //        Student Student_Object = await this._repositoryWrapper.StudentRepositoryWrapper.FindOne(StudentID);
+                this._logger.LogInfo($"Student with StudentID : {StudentID} have been read from GetStudent_ADO_Net action by {UserName}. Relations Included : {IncludeRelations}");
+                return Ok(null);
+            }
+            catch (Exception Error)
+            {
+                this._logger.LogError($"Something went wrong inside GetStudent_ADO_Net action for {UserName} : {Error.Message}");
+                return StatusCode((int)HttpStatusCode.InternalServerError, $"Internal server error : {Error.ToString()}");
+            }
+        }
 
-        //        if (null == Student_Object)
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            StudentDto StudentDto_Object = Student_Object.Adapt<StudentDto>();
-        //            this._logger.LogInfo($"Student with StudentID {StudentID} has been read from GetStudent action by {UserName}");
-        //            return Ok(StudentDto_Object);
-        //        }
-        //    }
-        //    catch (Exception Error)
-        //    {
-        //        this._logger.LogError($"Something went wrong inside GetStudent action for {UserName} : {Error.Message}");
-        //        return StatusCode((int)HttpStatusCode.InternalServerError, $"Internal server error : {Error.ToString()}");
-        //    }
-        //}
+        [HttpGet("GetStudentsInTeam_ADO_Net/{TeamID}")]
+        public async Task<IActionResult> GetStudentsInTeam_ADO_Net(int TeamID,
+                                                                   string UserName = "No Name",
+                                                                   bool IncludeRelations = true)
+        {
+            try
+            {
+                // Implementer kode her
 
-        //[HttpGet("GetStudentsInTeam/{TeamID}")]
-        //public async Task<IActionResult> GetStudentsInTeam(int TeamID,
-        //                                                   string UserName = "No Name")
-        //{
-        //    try
-        //    {
-        //        IEnumerable<Student> StudentList = new List<Student>();
-
-        //        this._repositoryWrapper.StudentRepositoryWrapper.EnableLazyLoading();
-
-        //        StudentList = await this._repositoryWrapper.StudentRepositoryWrapper.GetStudentsInTeam(TeamID);
-
-        //        List<StudentDto> StudentDtoList;
-
-        //        StudentDtoList = StudentList.Adapt<StudentDto[]>().ToList();
-
-        //        this._logger.LogInfo($"All Students within TeamID : {TeamID} has been read from GetStudentsInTeam action by {UserName}");
-        //        return Ok(StudentDtoList);
-        //    }
-        //    catch (Exception Error)
-        //    {
-        //        this._logger.LogError($"Something went wrong inside GetStudentsInTeam action for {UserName} : {Error.Message}");
-        //        return StatusCode((int)HttpStatusCode.InternalServerError, $"Internal server error : {Error.ToString()}");
-        //    }
-        //}
+                this._logger.LogInfo($"All Students within TeamID : {TeamID} has been read from GetStudentsInTeam_ADO_Net action by {UserName}. Relations Included : {IncludeRelations}");
+                return Ok(null);
+            }
+            catch (Exception Error)
+            {
+                this._logger.LogError($"Something went wrong inside GetStudentsInTeam_ADO_Net action for {UserName} : {Error.Message}");
+                return StatusCode((int)HttpStatusCode.InternalServerError, $"Internal server error : {Error.ToString()}");
+            }
+        }
 
         // POST: api/Student
         [HttpPost("CreateStudent_ADO_Net")]
@@ -216,46 +178,24 @@ namespace Student_WebApi_ADO_Net.Controllers
             }
         }
 
-        //        // DELETE: api/Student/5
-        //        [HttpDelete("DeleteStudent/{StudentID}")]
-        //        public async Task<IActionResult> DeleteStudent(int StudentID,
-        //                                                       string UserName = "No Name")
-        //        {
-        //            try
-        //            {
-        //                int NumberOfObjectsDeleted;
+        // DELETE: api/Student/5
+        [HttpDelete("DeleteStudent_ADO_Net/{StudentID}")]
+        public async Task<IActionResult> DeleteStudent_ADO_Net(int StudentID,
+                                                               string UserName = "No Name")
+        {
+            try
+            {
+                // Implementer kode her
 
-        //                Student Student_Object = await this._repositoryWrapper.StudentRepositoryWrapper.FindOne(StudentID);
+                this._logger.LogInfo($"Student with ID {StudentID} has been deleted in action DeleteStudent_ADO_Net by {UserName}");
+                return Ok($"Student with ID {StudentID} has been deleted in action DeleteStudent_ADO_Net by {UserName}");
 
-        //                if (null == Student_Object)
-        //                {
-        //                    this._logger.LogError($"Student with ID {StudentID} not found inside action DeleteStudent for {UserName}");
-        //                    return NotFound();
-        //                }
-
-        //                await this._repositoryWrapper.StudentRepositoryWrapper.Delete(Student_Object);
-
-        //                NumberOfObjectsDeleted = await this._repositoryWrapper.Save();
-
-        //                if (1 == NumberOfObjectsDeleted)
-        //                {
-        //#if Use_Hub_Logic_On_ServerSide
-        //                    await this._broadcastHub.Clients.All.SendAsync("UpdateStudentDataMessage");
-        //#endif
-        //                    this._logger.LogInfo($"Student with ID {StudentID} has been deleted in action DeleteStudent by {UserName}");
-        //                    return Ok($"Student with ID {StudentID} has been deleted in action DeleteStudent by {UserName}");
-        //                }
-        //                else
-        //                {
-        //                    _logger.LogError($"Error when deleting Student with ID : {StudentID} by {UserName} !!!");
-        //                    return BadRequest($"Error when deleting Student with ID : {StudentID} by {UserName} !!!");
-        //                }
-        //            }
-        //            catch (Exception Error)
-        //            {
-        //                _logger.LogError($"Something went wrong inside DeleteStudent action for {UserName}: {Error.Message}");
-        //                return StatusCode((int)HttpStatusCode.InternalServerError, $"Internal server error : {Error.ToString()}");
-        //            }
-        //        }
+            }
+            catch (Exception Error)
+            {
+                _logger.LogError($"Something went wrong inside DeleteStudent_ADO_Net action for {UserName}: {Error.Message}");
+                return StatusCode((int)HttpStatusCode.InternalServerError, $"Internal server error : {Error.ToString()}");
+            }
+        }
     }
 }
