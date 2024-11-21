@@ -15,32 +15,6 @@ namespace Entities.Models
     {
         private static SqlConnection? DatabaseConnection = null;
 
-        public static int Insert_Reflection<T>(this T DatabaseObject)
-        {  
-            Type DatabaseObjectType = typeof(T);
-            Type DatabaseObjectType1 = DatabaseObject.GetType();
-
-            //PropertyInfo PropertyInfoObject = null;
-            PropertyInfo[] PropertyInfos = DatabaseObjectType.GetProperties();
-            PropertyInfo[] PropertyInfos1 = DatabaseObjectType1.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-            foreach (PropertyInfo propertyInfo in PropertyInfos1)
-            {
-                Console.Write(propertyInfo.Name + " : ");
-                //PropertyInfoObject = DatabaseObjectType.GetProperty(name: propertyInfo.Name, bindingAttr: BindingFlags.Instance | BindingFlags.Public);
-                Console.WriteLine(propertyInfo.GetValue(DatabaseObject));
-            }
-            //foreach (PropertyInfo propertyInfo in PropertyInfos)
-            foreach (var propertyInfo in PropertyInfos)
-            {
-                Console.Write(propertyInfo.Name);
-                //PropertyInfoObject = DatabaseObjectType.GetProperty(name: propertyInfo.Name, bindingAttr: BindingFlags.Instance | BindingFlags.Public);
-                Console.WriteLine(propertyInfo.GetValue(DatabaseObjectType));
-            }
-
-            return 0; 
-        }
-
         public static int InsertObjectToDatabase<T>(this T obj, string tableName)
         {
             int Result = 0;

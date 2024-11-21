@@ -16,9 +16,6 @@ namespace Student_WebApi_ADO_Net.Controllers
     {
         private ILoggerManager _logger;
 
-#if Use_Hub_Logic_On_ServerSide
-        private readonly IHubContext<BroadcastHub> _broadcastHub;
-#endif
         public StudentController_ADO_Net(ILoggerManager logger)
         {
             this._logger = logger;
@@ -109,15 +106,12 @@ namespace Student_WebApi_ADO_Net.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    //this._logger.LogError($"ModelState is Invalid for {UserName} in action CreateStudent");
+                    this._logger.LogError($"ModelState is Invalid for {UserName} in action CreateStudent_ADO_Net");
                     return BadRequest(ModelState);
                 }
 
                 Student Student_Object = new Student();
                 Student_Object = StudentForSaveDto_Object.Adapt<Student>();
-
-                // Fuld Generisk metode
-                Student_Object.InsertObjectToDatabase<Student>(Student.TABLE_NAME);
 
                 // Metode med Getter-Setter
                 int SaveResult = Student_Object.Insert();
@@ -133,7 +127,7 @@ namespace Student_WebApi_ADO_Net.Controllers
             }
             catch (Exception Error)
             {
-                //_logger.LogError($"Something went wrong inside CreateStudent action for {UserName}: {Error.Message}");
+                _logger.LogError($"Something went wrong inside CreateStudent_ADO_Net action for {UserName}: {Error.Message}");
                 return StatusCode((int)HttpStatusCode.InternalServerError, $"Internal server error : {Error.ToString()}");
             }
         }
